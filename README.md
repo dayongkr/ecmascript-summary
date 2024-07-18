@@ -17,6 +17,9 @@
   - [Trailing commas in function parameter lists and calls](#trailing-commas-in-function-parameter-lists-and-calls)
   - [Async Functions](#async-functions)
   - [Shared Memory and Atomics](#shared-memory-and-atomics)
+
+> ⚠️ 아래부터는 작성 중으로 링크가 연결되어 있지 않습니다.
+
 - [ES9 (ES2018)](#es9-es2018)
   - [Lifting template literal restriction](#lifting-template-literal-restriction)
   - [`s` (`dotAll`) flag for regular expressions](#s-dotall-flag-for-regular-expressions)
@@ -127,9 +130,9 @@ Math.pow(2, 3); // 8
 1 ** Infinity; // NaN
 ```
 
-거듭제곱 연산자 (`**`)는 왼쪽 피연산자를 밑, 오른쪽 피연산자를 지수로 한 값을 구합니다. `Math.pow` 메서드와 동일한 동작(`Number::exponentiate`)을 하지만 보다 간결하고 가독성이 좋고 BigInt를 지원한다는 장점이 있습니다.
+거듭제곱 연산자 (`**`)는 왼쪽 피연산자를 밑, 오른쪽 피연산자를 지수로 한 값을 구합니다. `Math.pow` 메서드와 동일한 동작(`Number::exponentiate`)하지만 보다 간결하고 가독성이 좋고 `BigInt`를 지원한다는 장점이 있습니다.
 
-`IEEE 754-2019` 표준에서는 `1 ** Infinity`, `1 ** NaN`등의 연산 결과를 1로 정의하였으나 ECMAScript의 첫 번째 버전에서 NaN으로 정의했기 때문에 호환성을 위해 NaN으로 유지되었습니다. 실제로 파이썬과 같은 다른 언어들은 1을 반환합니다.
+`IEEE 754-2019` 표준에서는 `1 ** Infinity`, `1 ** NaN`등의 연산 결과를 1로 정의하였으나 ECMAScript의 첫 번째 버전에서 `NaN`으로 정의했기 때문에 호환성을 위해 `NaN`으로 유지되었습니다. 실제로 파이썬과 같은 다른 언어들은 `1`을 반환합니다.
 
 > 참고: [MDN - Exponentiation Operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Exponentiation), [Github Repo - tc39/proposal-exponentiation-operator](https://github.com/tc39/proposal-exponentiation-operator)
 
@@ -137,13 +140,156 @@ Math.pow(2, 3); // 8
 
 ### `Object.values`/`Object.entries`
 
+```javascript
+const author = {
+  name: "Dayong",
+  location: "South Korea",
+  age: 0,
+  [Symbol("isAuthor")]: true,
+};
+
+Object.values(author);
+// ["Dayong", "South Korea", 0]
+Object.entries(author);
+// [["name", "Dayong"], ["location", "South Korea"], ["age", 0]]
+```
+
+`Object.values` 메서드는 객체의 열거 가능한 속성 값들로 이루어진 배열을 반환하고, `Object.entries` 메서드는 객체의 열거 가능한 속성 키-값 쌍들로 이루어진 배열을 반환합니다.
+
+해당 메소드들은 키가 문자열인 속성만 반환하며, `Symbol` 키인 속성은 반환하지 않습니다. 이전부터 존재하던 `Object.keys` 메서드 또한 마찬가지입니다.
+
+> 참고: [MDN - Object.values()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values), [MDN - Object.entries()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries), [Github Repo - tc39/proposal-object-values-entries](https://github.com/tc39/proposal-object-values-entries?tab=readme-ov-file)
+
 ### String padding
+
+```javascript
+"Dayong".padStart(10); // "    Dayong"
+"Dayong".padEnd(10); // "Dayong    "
+"Dayong".padStart(10, "0"); // "0000Dayong"
+"Dayong".padStart(10, "😄"); // "😄😄Dayong"
+```
+
+`padStart` 메서드는 문자열의 길이를 지정한 길이로 맞추고, 부족한 부분을 지정한 문자로 채웁니다. `padEnd` 메서드는 문자열의 끝에 채워넣습니다. 이때 두 번째 인수를 생략하면 공백으로 채웁니다.
+
+문자열의 길이를 기준으로 채우기 때문에, 이모지와 같은 `surrogate pair` 문자는 2글자로 취급되어 채워집니다.
+
+> `surrogate pair`: 자바스크립트는 `UTF-16`을 사용하기 때문에, 좀 더 큰 문자를 표현하기 위해 `surrogate pair`라는 방법을 사용합니다. 이 방법은 2개의 16비트 문자로 큰 문자를 표현하는 방법입니다. 따라서 이모지와 같은 문자는 2개의 문자로 취급됩니다.
+
+> 참고: [MDN - String.prototype.padStart()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart), [MDN - String.prototype.padEnd()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd), [Github Repo - tc39/proposal-string-pad-start-end](https://github.com/tc39/proposal-string-pad-start-end?tab=readme-ov-file)
 
 ### `Object.getOwnPropertyDescriptors`
 
+```javascript
+const obj = {
+  name: "Dayong",
+  get age() {
+    return 0;
+  },
+};
+
+Object.getOwnPropertyDescriptors(obj);
+/*
+  {
+  name: {
+    value: 'Dayong',
+    writable: true,
+    enumerable: true,
+    configurable: true
+  },
+  age: {
+    get: [Function: get age],
+    set: undefined,
+    enumerable: true,
+    configurable: true
+  }
+}
+*/
+```
+
+`Object.getOwnPropertyDescriptors` 메서드는 객체의 모든 속성의 `descriptor`를 반환합니다.
+
+> `descriptor`는 속성의 속성을 의미합니다. 객체의 속성은 `value`, `writable`, `enumerable`, `configurable`, `get`, `set` 등의 속성을 가질 수 있습니다. 자세한 내용은 [MDN - Property descriptors](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)를 참고하세요.
+
+#### 얕은 복사
+
+```javascript
+const obj = {
+  name: "Dayong",
+  age: 0,
+  get nextAge() {
+    return this.age + 1;
+  },
+};
+
+// Object.assign
+const copy = Object.assign({}, obj);
+// { name: 'Dayong', age: 0, nextAge: 1 }
+copy.age = 1;
+copy.nextAge; // 1
+
+// Object.getOwnPropertyDescriptors
+const copy2 = Object.create(
+  Object.getPrototypeOf(obj),
+  Object.getOwnPropertyDescriptors(obj)
+);
+// { name: 'Dayong', age: 0, nextAge: [Getter] }
+
+copy2.age = 1;
+copy2.nextAge; // 2
+```
+
+`Object.assign` 메서드는 `getter`와 `setter`를 호출하기 때문에 `getter`와 `setter`를 복사할 수 없습니다. 반면 `Object.create` 메서드와 `Object.getOwnPropertyDescriptors` 메서드를 사용하면 `getter`와 `setter`를 복사할 수 있습니다. 다만 후자는 비교적 성능이 떨어지기 때문에 상황에 따라 적절한 방법을 선택하는 것이 좋습니다.
+
+> 참고: [MDN - Object.getOwnPropertyDescriptors()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptors), [Github Repo - tc39/proposal-object-getownpropertydescriptors](https://github.com/tc39/proposal-object-getownpropertydescriptors)
+
 ### Trailing commas in function parameter lists and calls
 
+```javascript
+// prettier-ignore
+function foo(
+  a,
+  b,
+  c,
+) {
+  return a + b + c;
+}
+
+// prettier-ignore
+foo(
+  1,
+  2,
+  3,
+); // 6
+```
+
+함수의 파라미터 리스트와 호출 시 마지막에 쉼표를 사용할 수 있습니다.
+
+이전에는 함수 파리미터를 추가하거나 삭제할 때, 마지막 쉼표를 추가하거나 삭제하는 작업이 필요하여 불필요한 부분도 `code history`에 남았습니다. 이를 방지하기 위해 파이썬과 같은 언어들은 이미 해당 기능을 지원하고 있었습니다.
+
+다만 `prettier`와 같은 코드 포맷터에서 `trailingComma` 옵션을 `all`로 설정하지 않으면 `prettier`가 자동으로 제거할 수 있습니다.
+
+> 참고: [Github Repo - tc39/proposal-trailing-function-commas](https://github.com/tc39/proposal-trailing-function-commas)
+
 ### Async Functions
+
+```javascript
+// Promise
+function fetchUser() {
+  return fetch("https://api.github.com/users/dayong-dev").then((res) =>
+    res.json()
+  );
+}
+
+// Async Functions
+async function fetchUser() {
+  const res = await fetch("https://api.github.com/users/dayong-dev");
+  return res.json();
+}
+```
+
+기존 `Promise`를 사용한 비동기 처리 방식은 `callback hell`을 유발하고 가독성이 떨어지는 등의 문제가 있었습니다. `Async Functions`는 `Promise`를 사용한 비동기 처리를 보다 간결하고 가독성이 좋게 작성할 수 있도록 도와줍니다.
+
+> 참고: [MDN - async function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
 
 ### Shared Memory and Atomics
 
@@ -258,3 +404,23 @@ Math.pow(2, 3); // 8
 ### `Promise.withResolvers`
 
 ### ArrayBuffer transfer
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
