@@ -293,6 +293,102 @@ async function fetchUser() {
 
 ### Shared Memory and Atomics
 
+자바스크립트 엔진은 기본적으로 단일 스레드로 동작하지만, 웹 워커를 사용하면 멀티 스레드로 동작할 수 있습니다. 각 워커는 독립적인 공간을 가지고 있어, 데이터를 공유하기 위해서는 `postMessage`를 사용해야 합니다. 하지만 `postMessage`는 일반적으로 데이터를 복사해서 직렬화(serialize)하고 역직렬화(deserialize)하기 때문에 성능이 떨어지고 메모리를 많이 사용합니다.
+
+이러한 문제를 해결하기 위해 `SharedArrayBuffer`가 등장했습니다. `SharedArrayBuffer`는 serialize 과정에서 복사를 하지 않기 때문에, 성능이 향상되고 메모리를 공유할 수 있습니다.
+
+> 종종 `SharedArrayBuffer`를 사용하면 직렬화를 하지 않아 성능이 향상된다고 알려져 있지만, `postMessage`는 항상 직렬화를 수행하기 때문에 이는 사실이 아닙니다. 복사가 핵심입니다.
+
+```javascript
+// main.js
+const worker = new Worker(import.meta.resolve("./worker.js"), {
+  type: "module",
+});
+const buffer = new ArrayBuffer(1024);
+const sharedBuffer = new SharedArrayBuffer(1024);
+
+const view = new Int32Array(buffer);
+const sharedView = new Int32Array(sharedBuffer);
+
+worker.postMessage({ buffer, sharedBuffer });
+worker.onmessage = (e) => {
+  console.log(e.data);
+  console.log(view[0], sharedView[0]);
+};
+```
+
+```javascript
+// worker.js
+onmessage = ({ data }) => {
+  const { buffer, sharedBuffer } = data;
+  const view = new Int32Array(buffer);
+  const sharedView = new Int32Array(sharedBuffer);
+
+  view[0] = 1;
+  sharedView[0] = 1;
+
+  postMessage("done");
+};
+```
+
+```bash
+# 출력 결과
+done
+0 1
+```
+
+> 웹 워커와 `ArrayBuffer`에 대한 내용은 주제를 벗어나므로 생략하겠습니다.
+
+위 코드는 `ArrayBuffer`와 비교했을 때 어떠한 차이가 있는지 보여주는 예제입니다. `ArrayBuffer`는 복사를 하기 때문에, 워커 스레드에서 값을 변경해도 메인 스레드에서는 변경되지 않습니다. 반면 `SharedArrayBuffer`는 복사를 하지 않고 공유하기 때문에, 워커 스레드에서 값을 변경하면 메인 스레드에서도 변경됩니다.
+
+이처럼 서로 메모리를 공유하면 신경 써야 할 부분이 생기는데, 그 중 하나는 경쟁상태(race condition)입니다.
+
+> 경쟁상태: 두 개 이상의 스레드가 동시에 같은 자원에 접근하려고 할 때, 그 결과가 접근 순서에 따라 달라지는 상태를 말합니다.
+
+이러한 문제에서 보호하기 위해 `Atomics` 객체도 같이 등장했습니다. `Atomics` 객체는 다양한 메소드를 제공하는데, 이런 경쟁상태를 해결하는 가장 보편적인 예제를 보여줄 수 있는 `Atomics.wait` 메서드와 `Atomics.notify` 메서드 위주로 설명하겠습니다.
+
+```javascript
+// main.js
+const worker = new Worker(import.meta.resolve("./worker.js"), {
+  type: "module",
+});
+
+const sharedBuffer = new SharedArrayBuffer(1024);
+const sharedView = new Int32Array(sharedBuffer);
+
+const previous = sharedView[0];
+
+worker.postMessage({ sharedBuffer });
+console.log(sharedView[0]);
+Atomics.wait(sharedView, 0, previous);
+console.log("Done", sharedView[0]);
+```
+
+```javascript
+// worker.js
+onmessage = ({ data }) => {
+  const { sharedBuffer } = data;
+  const sharedView = new Int32Array(sharedBuffer);
+
+  sharedView[0] = 1;
+  console.log("Worker thread", sharedView[0]);
+  Atomics.notify(sharedView, 0, 1);
+};
+```
+
+```bash
+# 출력 결과
+0
+Worker thread 1
+Done 1
+```
+
+`Atomics.wait` 메서드는 첫 번째 인수로 `Int32Array`, 두 번째 인수로 인덱스, 세 번째 인수로 기대하는 값이 전달됩니다. 즉 `Atomics.wait(sharedView, 0, previous)`는 `sharedView[0]`가 `previous`와 같을 때까지 기다리는 것을 의미합니다.
+
+`Atomics.notify` 메서드는 첫 번째 인수로 `Int32Array`, 두 번째 인수로 인덱스, 세 번째 인수로 몇 개의 스레드를 깨울지 전달됩니다. 즉 `Atomics.notify(sharedView, 0, 1)`는 `sharedView[0]`가 변경되길 기다리고 있는 스레드 중 하나를 깨우는 것을 의미합니다.
+
+> 참고: [HTML spec - 2.7 Safe passing of structured data](https://html.spec.whatwg.org/multipage/structured-data.html), [MDN - Atomics](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics), [MDN - SharedArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer)
+
 ## ES9 (ES2018)
 
 ### Lifting template literal restriction
@@ -404,22 +500,6 @@ async function fetchUser() {
 ### `Promise.withResolvers`
 
 ### ArrayBuffer transfer
-
-```
-
-```
-
-```
-
-```
-
-```
-
-```
-
-```
-
-```
 
 ```
 
