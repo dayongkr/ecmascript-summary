@@ -411,13 +411,16 @@ function tag(strs) {
 }
 
 tag`\unicode and \u{55}`;
+`unicode and u{55}`; // SyntaxError
 ```
 
-따라서 해당 제안은 `Tagged Templates`에서는 해당 구문 제한을 없애는 대신, 허락되지 않은 `escape sequence`가 포함되면 `cooked value (strs[0])`는 `undefined`로 설정하고 `raw value(strs.raw[0])`로는 전달 받은 값을 그대로 유지하도록 변경되었습니다.
+따라서 해당 제안은 `Tagged Templates`에서는 해당 구문 제한을 없애는 대신, 허락되지 않은 `escape sequence`가 포함되면 `cooked value (strs[0])`는 `undefined`로 설정하고 `raw value(strs.raw[0])`로는 전달 받은 값을 그대로 유지하도록 변경되었습니다. 다만, 일반적인 경우로 템플릿 리터럴을 사용할 때는 여전히 해당 제한이 적용됩니다.
 
-> 다만, 일반적인 경우로 템플릿 리터럴을 사용할 때는 여전히 해당 제한이 적용됩니다.
+> 참고: [Github Repo - tc39/proposal-template-literal-revision](https://github.com/tc39/proposal-template-literal-revision), [MDN - Template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
 
 ### `s` (`dotAll`) flag for regular expressions
+
+일반
 
 ### RegExp named capture groups
 
