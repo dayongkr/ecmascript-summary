@@ -393,6 +393,30 @@ Done 1
 
 ### Lifting template literal restriction
 
+```typescript
+// ES2017
+`\u00FF`; // 정상
+`\u{2F804}`; // 정상
+`\xFF`; // 정상
+`\251`; //정상
+`\unicode`; // SyntaxError
+```
+
+ECMA Script의 문법은 템플릿 리터럴에서 `\u00FF` 또는 `\xFF`와 같은 형태로 작성하는 것을 강제하고 있습니다. 따라서 DSLs(Domain Specific Languages)와 같은 특정한 문법을 사용할 때 불편함을 겪을 수 있습니다.
+
+```typescript
+function tag(strs) {
+  strs[0] === undefined; // true
+  strs.raw[0] === "\\unicode and \\u{55}"; // true
+}
+
+tag`\unicode and \u{55}`;
+```
+
+따라서 해당 제안은 `Tagged Templates`에서는 해당 구문 제한을 없애는 대신, 허락되지 않은 `escape sequence`가 포함되면 `cooked value (strs[0])`는 `undefined`로 설정하고 `raw value(strs.raw[0])`로는 전달 받은 값을 그대로 유지하도록 변경되었습니다.
+
+> 다만, 일반적인 경우로 템플릿 리터럴을 사용할 때는 여전히 해당 제한이 적용됩니다.
+
 ### `s` (`dotAll`) flag for regular expressions
 
 ### RegExp named capture groups
@@ -500,6 +524,10 @@ Done 1
 ### `Promise.withResolvers`
 
 ### ArrayBuffer transfer
+
+```
+
+```
 
 ```
 
