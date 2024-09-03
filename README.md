@@ -14,15 +14,15 @@ ECMAScript는 1996년 11월에 개발되기 시작했고 1997년 6월에 ECMA Ge
 
 ## 목차
 
-- [ES7 (ES2016)](./docs/ECMAScript7.md)
-- [ES8 (ES2017)](./docs/ECMAScript8.md)
+- [ES7 (ES2016)](./docs/ECMAScript2016.md)
+- [ES8 (ES2017)](./docs/ECMAScript2017.md)
 
 > ⚠️ 아래부터는 작성 중으로 일부 내용이 누락되었을 수 있습니다.
 
-- [ES9 (ES2018)](./docs/ECMAScript9.md)
-- [ES10 (ES2019)](./docs/ECMAScript10.md)
-- [ES11 (ES2020)](./docs/ECMAScript11.md)
-- [ES12 (ES2021)](./docs/ECMAScript12.md)
-- [ES13 (ES2022)](./docs/ECMAScript13.md)
-- [ES14 (ES2023)](.docs/ECMAScript14.md)
-- [ES15 (ES2024)](.docs/ECMAScript15.md)
+- [ES9 (ES2018)](./docs/ECMAScript2018.md)
+- [ES10 (ES2019)](./docs/ECMAScript2019.md)
+- [ES11 (ES2020)](./docs/ECMAScript2020.md)
+- [ES12 (ES2021)](./docs/ECMAScript2021.md)
+- [ES13 (ES2022)](./docs/ECMAScript2022.md)
+- [ES14 (ES2023)](./docs/ECMAScript2023.md)
+- [ES15 (ES2024)](./docs/ECMAScript2024.md)
