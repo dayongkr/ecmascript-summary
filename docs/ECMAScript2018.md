@@ -64,6 +64,52 @@ tag`\unicode and \u{55}`;
 
 ## RegExp named capture groups
 
+정규 표현식에는 caputre group이라는 개념이 있습니다. 이는 `()`로 묶인 부분을 매칭한 결과를 저장하는 것을 의미합니다.
+
+```javascript
+const before = /(\d{4})-(\d{2})-(\d{2})/;
+const beforeResult = before.exec("2024-09-04");
+
+beforeResult[1]; // "2024"
+```
+
+하지만 위처럼 순서로 매칭된 결과에 접근하는 것은 가독성이 떨어지고, 유지보수가 어려울 수 있습니다.
+
+따라서 `(?<name>...)` 형태로 이름을 지정할 수 있는 `named capture groups`가 도입되었습니다.
+
+```javascript
+const after = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/;
+const afterResult = after.exec("2024-09-04");
+
+afterResult.groups.year; // "2024"
+```
+
+이를 통해 매칭된 결과에 이름을 지정하여 접근할 수 있게 되었습니다.
+
+### Named Backreferences
+
+정규 표현식에는 backreference라는 개념이 있습니다. 이는 `()`로 묶인 부분을 다시 참조하는 것을 의미합니다.
+
+```javascript
+const before = /(')(.*)\1/;
+const beforeResult = before.exec("'Hello'");
+
+beforeResult[2]; // "Hello"
+```
+
+이 또한 가독성이 떨어지기 때문에, `(\k<name>)` 형태로 이름을 지정할 수 있는 `named backreferences`가 도입되었습니다.
+
+```javascript
+const after = /(?<quote>'(?<content>.*)'\k<quote>)/;
+const afterResult = after.exec("'Hello'");
+
+afterResult.groups.content; // "Hello"
+```
+
+이를 통해 backreference에도 이름을 지정하여 접근할 수 있게 되었습니다.
+
+> 참고: [Github Repo - tc39/proposal-regexp-named-groups](https://github.com/tc39/proposal-regexp-named-groups), [MDN - Named capturing group](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), [MDN - Named backreference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_backreference)
+
 ## Rest/Spread Properties
 
 ## RegExp Lookbehind Assertions
