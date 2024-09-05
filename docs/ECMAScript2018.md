@@ -5,7 +5,7 @@
 - [Lifting template literal restriction](#lifting-template-literal-restriction)
 - [`s` (`dotAll`) flag for regular expressions](#s-dotall-flag-for-regular-expressions)
 - [RegExp named capture groups](#regexp-named-capture-groups)
-- [Rest/Spread Properties](#restspread-properties)
+- [Object Rest/Spread Properties](#object-restspread-properties)
 - [RegExp Lookbehind Assertions](#regexp-lookbehind-assertions)
 - [RegExp Unicode Property Escapes](#regexp-unicode-property-escapes)
 - [`Promise.prototype.finally`](#promiseprototypefinally)
@@ -112,7 +112,39 @@ afterResult.groups.content; // "Hello"
 
 > 참고: [Github Repo - tc39/proposal-regexp-named-groups](https://github.com/tc39/proposal-regexp-named-groups), [MDN - Named capturing group](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group), [MDN - Named backreference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_backreference)
 
-## Rest/Spread Properties
+## Object Rest/Spread Properties
+
+```javascript
+// Rest elements
+const [first, ...rest] = [1, 2, 3, 4, 5];
+first; // 1
+rest; // [2, 3, 4, 5]
+
+// Spread elements
+const arr = [1, 2, 3];
+const arr2 = [...arr, 4, 5];
+arr2; // [1, 2, 3, 4, 5]
+```
+
+ES6에 위 예시와 같이 배열을 위한 Rest/Spread elements가 도입되었습니다.
+
+ES9에서는 이 기능을 객체를 대상으로도 사용할 수 있도록 Object Rest/Spread properties가 도입되었습니다.
+
+```javascript
+// Rest properties
+const { first, ...rest } = { first: 1, second: 2, third: 3 };
+first; // 1
+rest; // { second: 2, third: 3 }
+
+// Spread properties
+const obj = { first: 1, second: 2 };
+const obj2 = { ...obj, third: 3 };
+obj2; // { first: 1, second: 2, third: 3 }
+```
+
+위 예시와 같이 배열과 비슷한 방식으로 객체에 대한 Rest/Spread properties를 사용할 수 있습니다.
+
+객체의 특정 속성만 분리하거나 새로운 속성을 추가할 때 매우 유용합니다.
 
 ## RegExp Lookbehind Assertions
 
