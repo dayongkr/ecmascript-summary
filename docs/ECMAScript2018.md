@@ -148,6 +148,28 @@ obj2; // { first: 1, second: 2, third: 3 }
 
 ## RegExp Lookbehind Assertions
 
+ECMAScript는 Lookahead Assertions를 지원합니다. 이 기능은 특정 패턴이 뒤에 오는 경우에만 매칭을 허용하며, 조건으로 지정한 패턴은 매칭 결과에 포함되지 않습니다.
+
+```javascript
+const regex = /\d+(?=\₩)/;
+"100000₩".match(regex); // ["100000"]
+```
+
+위 예시에서, Lookahead는 숫자 뒤에 ₩ 기호가 있을 때만 숫자를 매칭합니다. 매칭 결과에는 Lookahead 조건으로 지정한 ₩ 기호는 포함되지 않습니다.
+
+> 해당 예시는 긍정형 Lookahead입니다. 부정형 Lookahead는 `(?!)`를 사용하여 특정 패턴이 존재하지 않을 때 매칭할 수 있습니다.
+
+Lookbehind Assertions는 Lookahead와 반대 방향으로 동작하여, 특정 패턴이 앞에 있을 때만 매칭을 허용합니다.
+
+```javascript
+const regex = /(?<=\$)\d+/;
+"$100000".match(regex); // ["100000"]
+```
+
+위 예시에서 Lookbehind는 `$` 기호 앞에 있는 숫자만 매칭하고, 매칭 결과에는 Lookbehind 조건으로 지정한 `$` 기호는 포함되지 않습니다.
+
+부정형 Lookbehind는 `(?<!)`로 표현하며, 특정 패턴이 존재하지 않는 경우에만 매칭할 수 있습니다.
+
 ## RegExp Unicode Property Escapes
 
 ## `Promise.prototype.finally`
