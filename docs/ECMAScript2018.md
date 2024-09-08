@@ -155,7 +155,7 @@ const regex = /\d+(?=\₩)/;
 "100000₩".match(regex); // ["100000"]
 ```
 
-위 예시에서, Lookahead는 숫자 뒤에 ₩ 기호가 있을 때만 숫자를 매칭합니다. 매칭 결과에는 Lookahead 조건으로 지정한 ₩ 기호는 포함되지 않습니다.
+위 예시에서, Lookahead는 숫자 뒤에 `₩` 기호가 있을 때만 숫자를 매칭합니다. 매칭 결과에는 Lookahead 조건으로 지정한 ₩ 기호는 포함되지 않습니다.
 
 > 해당 예시는 긍정형 Lookahead입니다. 부정형 Lookahead는 `(?!)`를 사용하여 특정 패턴이 존재하지 않을 때 매칭할 수 있습니다.
 
@@ -166,11 +166,35 @@ const regex = /(?<=\$)\d+/;
 "$100000".match(regex); // ["100000"]
 ```
 
-위 예시에서 Lookbehind는 `$` 기호 앞에 있는 숫자만 매칭하고, 매칭 결과에는 Lookbehind 조건으로 지정한 `$` 기호는 포함되지 않습니다.
+위 예시에서 Lookbehind는 `$` 기호 뒤에 있는 숫자만 매칭하고, 매칭 결과에는 Lookbehind 조건으로 지정한 `$` 기호는 포함되지 않습니다.
 
 부정형 Lookbehind는 `(?<!)`로 표현하며, 특정 패턴이 존재하지 않는 경우에만 매칭할 수 있습니다.
 
 ## RegExp Unicode Property Escapes
+
+유니코드 표준은 각 유니코드 문자에 대해 다양한 속성을 할당합니다. 이 속성에는 General_Category, Script, Block 등이 포함되며, ES9부터는 이러한 속성 중 General_Category, Script, Script_Extensions 속성을 사용할 수 있는 유니코드 속성 이스케이프가 도입되었습니다.
+
+```javascript
+const hangul = /\p{Script=Hangul}/gu;
+const lower = /\p{Lowercase}/gu;
+const emoji = /\p{Emoji}/gu;
+const string = "안녕하세요 Hello 🌍";
+
+string.match(hangul); // ["안", "녕", "하", "세", "요"]
+string.match(lower); // ["e", "l", "l", "o"]
+string.match(emoji); // ["🌍"]
+```
+
+위 예시처럼, 유니코드 속성 이스케이프를 사용하여 원하는 속성이나 분류에 해당하는 유니코드 문자만 매칭할 수 있습니다.
+
+- General_Category 속성이나 [Binary Property](https://tc39.es/ecma262/multipage/text-processing.html#table-binary-unicode-properties)는 `\p{...}`와 `\P{...}` 형식으로 사용할 수 있습니다.
+- [그 외의 속성들](https://tc39.es/ecma262/multipage/text-processing.html#table-nonbinary-unicode-properties)은 `\p{property=value}`와 `\P{property=value}` 형식으로 사용할 수 있습니다.
+
+Script 속성의 범위가 궁금하면, [Scripts.txt](https://www.unicode.org/Public/12.1.0/ucd/Scripts.txt)에서 확인할 수 있습니다.
+
+> 참고: [MDN - Unicode character class escape: \p{...}, \P{...}](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Unicode_character_class_escape), [Github Repo - tc39/proposal-regexp-unicode-property-escapes](https://github.com/tc39/proposal-regexp-unicode-property-escapes?tab=readme-ov-file)
+>
+> 관련: [Unicode Character Ranges](https://jrgraphix.net/r/Unicode/), [D2 - 한글 인코딩의 이해 2편: 유니코드와 Java를 이용한 한글 처리](https://d2.naver.com/helloworld/76650)
 
 ## `Promise.prototype.finally`
 
