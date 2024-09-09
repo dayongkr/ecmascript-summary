@@ -200,7 +200,7 @@ Script 속성의 범위가 궁금하면, [Scripts.txt](https://www.unicode.org/P
 
 많은 프로미스 라이브러리에서 `finally` 메서드를 제공하고 있었습니다. 이 메서드는 프로미스가 성공하든 실패하든 상관없이 항상 실행되는 메서드입니다.
 
-ECMAScript에서는 이 메서드를 지원하지 않았기 때문에, `promise.then(onFinally, onFinally)`와 같은 방식으로 구현해야 했습니다. 그러나 이러한 방식은 Promise의 결과를 변경할 수 있기 때문에 적절하지 않았습니다
+ECMAScript에서는 이 메서드를 지원하지 않았기 때문에, `promise.then(onFinally, onFinally)`와 같은 방식으로 구현해야 했습니다. 그러나 이러한 방식은 Promise의 결과를 변경할 수 있기 때문에 적절하지 않았습니다. 이를 해결하기 위해 ES9에서는 `Promise.prototype.finally` 메서드가 도입되었습니다.
 
 ```javascript
 await Promise.resolve(1).then(
@@ -212,7 +212,7 @@ await Promise.resolve(1)
   .finally(() => {}); // 1
 ```
 
-위 예시와 같이, finally 메서드는 프로미스의 결과를 변경하지 않고 항상 실행됩니다.
+위 예시와 같이, finally 메서드는 then 메서드와 같이 메서드 체인 형태로 사용할 수 있으며, 프로미스의 결과를 변경하지 않고 항상 실행됩니다.
 
 ```javascript
 Promise.resolve(1).finally(() => {
