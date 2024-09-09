@@ -198,4 +198,31 @@ Script 속성의 범위가 궁금하면, [Scripts.txt](https://www.unicode.org/P
 
 ## `Promise.prototype.finally`
 
+많은 프로미스 라이브러리에서 `finally` 메서드를 제공하고 있었습니다. 이 메서드는 프로미스가 성공하든 실패하든 상관없이 항상 실행되는 메서드입니다.
+
+ECMAScript에서는 이 메서드를 지원하지 않았기 때문에, `promise.then(onFinally, onFinally)`와 같은 방식으로 구현해야 했습니다. 그러나 이러한 방식은 Promise의 결과를 변경할 수 있기 때문에 적절하지 않았습니다
+
+```javascript
+await Promise.resolve(1).then(
+  () => {},
+  () => {}
+); // undefined
+await Promise.resolve(1)
+  .then(() => {})
+  .finally(() => {}); // 1
+```
+
+위 예시와 같이, finally 메서드는 프로미스의 결과를 변경하지 않고 항상 실행됩니다.
+
+```javascript
+Promise.resolve(1).finally(() => {
+  throw 0;
+}); // Uncaught (in promise) 0
+Promise.resolve(1).finally(() => Promise.reject(0)); // Uncaught (in promise) 0
+```
+
+참고로, finally 내부에서 에러를 발생시키거나 거부된 프로미스를 반환하면, 앞의 프로미스 결과와 상관없이 거부된 프로미스가 반환됩니다.
+
+> 참고: [MDN - Promise.prototype.finally()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally), [Github Repo - tc39/proposal-promise-finally](https://github.com/tc39/proposal-promise-finally)
+
 ## Asynchronous Iteration
