@@ -226,3 +226,5 @@ Promise.resolve(1).finally(() => Promise.reject(0)); // Uncaught (in promise) 0
 > 참고: [MDN - Promise.prototype.finally()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally), [Github Repo - tc39/proposal-promise-finally](https://github.com/tc39/proposal-promise-finally)
 
 ## Asynchronous Iteration
+
+> 참고: [MDN - for await...of](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of), [Github Repo - tc39/proposal-async-iteration](https://github.com/tc39/proposal-async-iteration)
