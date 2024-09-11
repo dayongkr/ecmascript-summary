@@ -227,4 +227,65 @@ Promise.resolve(1).finally(() => Promise.reject(0)); // Uncaught (in promise) 0
 
 ## Asynchronous Iteration
 
+ES6에서는 iterator 인터페이스를 순차적으로 데이터에 접근할 수 있는 방법을 제공했습니다. 하지만 이는 동기적인 방식으로 동작하기 때문에, I/O 작업과 같은 비동기적인 작업을 처리하기에는 적합하지 않았습니다. 이를 해결하기 위해 ES9에서는 비동기적인 작업을 처리할 수 있는 Asynchronous Iteration이 도입되었습니다.
+
+```javascript
+const asyncIterable = {
+  [Symbol.asyncIterator]() {
+    let i = 0;
+    return {
+      async next() {
+        if (i < 3) {
+          return { value: i++, done: false };
+        }
+        return { done: true };
+      },
+      async return() {
+        // Optional: if the loop is terminated early
+        return { done: true };
+      },
+    };
+  },
+};
+
+for await (const value of asyncIterable) {
+  console.log(value); // 0, 1, 2
+}
+```
+
+위 예시와 같이, `for await...of` 구문을 사용하여 비동기적인 이터러블을 순회할 수 있습니다. 이를 위해 이터러블은 `Symbol.asyncIterator` 메서드를 구현해야 하며, `next` 메서드는 Promise를 반환해야 합니다.
+
+```javascript
+async function* asyncGenerator() {
+  let i = 0;
+  while (i < 3) {
+    yield i++;
+  }
+}
+
+for await (const value of asyncGenerator()) {
+  console.log(value); // 0, 1, 2
+}
+```
+
+또는 async generator 함수를 사용하여 비동기적인 이터러블을 생성할 수도 있습니다.
+
+```javascript
+function* generator() {
+  yield 1;
+  yield Promise.resolve(2);
+  yield 3;
+}
+
+for await (const value of generator()) {
+  console.log(value); // 1, 2, 3
+}
+
+for (const value of generator()) {
+  console.log(value); // 1, Promise { 2 }, 3
+}
+```
+
+추가로 `for await...of` 구문은 동기적인 이터러블에 대해서도 사용할 수 있습니다. 위 같은 경우 `Promise.resolve(2)`가 해결되기 전까지 대기하고, 해결된 후에 순회를 계속합니다. 따라서 `Promise.reject`와 같이 거부된 프로미스가 반환되면 `for await...of` 구문은 에러를 발생시키고 `for...of` 구문은 그대로 진행하는 차이가 발생합니다.
+
 > 참고: [MDN - for await...of](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of), [Github Repo - tc39/proposal-async-iteration](https://github.com/tc39/proposal-async-iteration)
