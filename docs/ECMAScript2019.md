@@ -33,6 +33,20 @@ try {
 
 ## JSON superset
 
+```javascript
+const LS = "\u2028"; // Line separator
+const PS = "\u2029"; // Paragraph separator
+
+JSON.parse(`{"lineSeparator":"${LS}"}`); // SyntaxError
+JSON.parse(`{"paragraphSeparator":"${PS}"}`); // SyntaxError
+```
+
+ECMAScript는 JSON을 `JSON.parse` 하위집합(Subset)으로 주장하고 있었지만, 실제로는 JSON에서 지원하는 모든 유니코드 이스케이프 시퀀스를 지원하지 않았습니다. 예를 들어, 위 코드에서는 JSON에서 지원하는 유니코드 이스케이프 시퀀스인 Line separator(`\u2028`)와 Paragraph separator(`\u2029`)를 사용했지만, ECMAScript에서는 SyntaxError가 발생합니다.
+
+따라서 ECMAScript 2019에서는 ECMA-262의 구문을 JSON의 상위집합(Superset)으로 확장하기 위해, 위와 같은 두 개의 유니코드 이스케이프 시퀀스를 지원하게 되었습니다.
+
+> 참고: [Github - proposal-json-superset](https://github.com/tc39/proposal-json-superset?tab=readme-ov-file), [tc39 - JSON superset](https://tc39.es/proposal-json-superset/)
+
 ## `Symbol.prototype.description`
 
 ## `Function.prototype.toString` revision
