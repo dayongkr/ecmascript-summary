@@ -49,6 +49,21 @@ ECMAScript는 JSON을 `JSON.parse` 하위집합(Subset)으로 주장하고 있�
 
 ## `Symbol.prototype.description`
 
+```javascript
+const sym = Symbol("foo");
+
+console.log(sym); // Symbol(foo)
+console.log(sym.description); // foo
+```
+
+심볼(Symbol)은 생성할 때 선택적으로 설명(description)을 정의할 수 있습니다. 이러한 설명은 `Symbol.prototype.toString` 메서드를 통해 확인할 수 있었습니다. 하지만 해당 메서드는 설명만 반환하지 않고 `Symbol()`과 같은 형태로 반환되기 때문에, 설명만 추출하기 위해서는 추가적인 처리가 필요했습니다.
+
+> 예를 들어 `Symbol("foo").toString().slice(7, -1); // foo` 와 같은 방법으로 설명을 추출할 수 있습니다.
+
+ECMAScript 2019에서는 이러한 설명을 추출하기 위한 `Symbol.prototype.description` 프로퍼티를 추가하게 되었습니다. 이를 통해 명시적으로 설명을 추출할 수 있게 되었습니다.
+
+> 참고: [Github - proposal-Symbol-description](https://github.com/tc39/proposal-Symbol-description), [MDN - Symbol.prototype.description](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/description)
+
 ## `Function.prototype.toString` revision
 
 ## `Object.fromEntries`
