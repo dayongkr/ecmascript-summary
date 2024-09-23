@@ -68,6 +68,33 @@ ECMAScript 2019에서는 이러한 설명을 추출하기 위한 `Symbol.prototy
 
 ## `Object.fromEntries`
 
+`Object.fromEntries` 메서드는 `Object.entries` 메서드의 반대 역할을 수행합니다. 즉, `Object.entries` 메서드는 객체를 배열로 변환하는 반면, `Object.fromEntries` 메서드는 배열을 객체로 변환합니다.
+
+```javascript
+obj = Object.fromEntries([
+  ["foo", "bar"],
+  ["baz", 42],
+]); // { foo: "bar", baz: 42 }
+```
+
+Map 같은 경우에는 이전부터 `new Map(Object.entries(obj))`와 같은 방법으로 배열을 Map으로 변환할 수 있었지만, 객체는 `Object.entries(obj).reduce((acc, [key, val]) => ({ ...acc, [key]: val }), {})`와 같은 방법으로만 배열을 객체로 변환할 수 있었습니다. 이러한 번거로움을 해소하기 위해 `Object.fromEntries` 메서드가 추가되었습니다.
+
+### `Object.fromEntries` 사용 예시
+
+```javascript
+const map = new Map([
+  ["foo", "bar"],
+  ["baz", 42],
+]);
+
+JSON.stringify(map); // "{}"
+JSON.stringify(Object.fromEntries(map)); // {"foo":"bar","baz":42}
+```
+
+Map 객체는 `JSON.stringify` 메서드를 통해 직렬화할 수 없습니다. 하지만 `Object.fromEntries` 메서드를 통해 Map 객체를 객체로 변환한 후 직렬화할 수 있습니다.
+
+> 참고: [Github - proposal-object-from-entries](https://github.com/tc39/proposal-object-from-entries),[MDN - Object.fromEntries](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries)
+
 ## Well-formed `JSON.stringify`
 
 ## `String.prototype.{trimStart,trimEnd}`
