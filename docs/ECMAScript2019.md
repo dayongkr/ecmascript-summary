@@ -66,6 +66,47 @@ ECMAScript 2019에서는 이러한 설명을 추출하기 위한 `Symbol.prototy
 
 ## `Function.prototype.toString` revision
 
+해당 제안은 전방 호환성(Future-compatibility)가 없는 요구사항을 제거하고, 반환값을 명시적으로 정의하는 것을 목표로 합니다.
+
+### 1. 전방 호환성(Future-compatibility)가 없는 요구사항 제거
+
+이전에는 `toString` 메서드가 구조적으로 유효한 ECMAScript를 반환하지 못했다면, `eval` 함수를 통해 해당 문자열을 실행하면 `SyntaxError`가 발생해야 한다는 요구사항이 있었습니다. 이러한 요구사항은 전방 호환성을 제공하지 못하기 때문에, 해당 요구사항은 제거되었고 `[native code]`와 같은 문자열을 반환하는 것으로 대체되었습니다.
+
+### 2. 반환값을 명시적으로 정의
+
+1. 바운드된 익명 함수이거나 내장 함수인 경우, 함수 바디에 `[native code]`를 넣어 반환
+   a. 익명 함수가 아닌 경우, 잘 알려진 내장 객체(Well-known intrinsic object; `Array.prototype.push`)인 경우, 함수 이름을 함께 반환
+2. 함수 내부에 `[[SourceText]]` 내부 슬롯이 있는 경우, 해당 속성을 반환
+3. 호출 가능한 객체인 경우, NativeFunction 형태 즉, 바디에 `[native code]`를 넣어 반환
+
+예외 상황에는 `TypeError`를 던지도록 명시되어 있습니다.
+
+### 예시
+
+```javascript
+// 바운드된 익명 함수
+(() => {}).bind({}).toString(); // "() => { [native code] }"
+
+// 내장 함수
+Array.prototype.push.toString(); // "function push() { [native code] }"
+
+// 함수 내부에 [[SourceText]] 내부 슬롯이 있는 경우
+(function foo() {
+  console.log("foo");
+}).toString(); // 'function foo() {\n  console.log("foo");\n}'
+
+// arrow function
+(() => {}).toString(); // "() => {}"
+
+// generator function
+(function* () {}).toString(); // "function*() {}"
+
+// async function
+(async function () {}).toString(); // "async function() {}"
+```
+
+> 참고: [tc39 - Function.prototype.toString revision](https://tc39.es/Function-prototype-toString-revision)
+
 ## `Object.fromEntries`
 
 `Object.fromEntries` 메서드는 `Object.entries` 메서드의 반대 역할을 수행합니다. 즉, `Object.entries` 메서드는 객체를 배열로 변환하는 반면, `Object.fromEntries` 메서드는 배열을 객체로 변환합니다.
