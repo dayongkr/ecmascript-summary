@@ -138,6 +138,49 @@ Map 객체는 `JSON.stringify` 메서드를 통해 직렬화할 수 없습니다
 
 ## Well-formed `JSON.stringify`
 
+[RFC 8529 섹션 8.1](https://datatracker.ietf.org/doc/html/rfc8259#section-8.1)에 따르면, JSON 문자열은 UTF-8 인코딩을 사용해야 한다고 명시되어 있습니다. 하지만 이전의 `JSON.stringify` 메서드는 UTF-8로 표현할 수 없는 코드 포인트를 포함하는 문자열을 반환할 수 있었습니다.
+
+```javascript
+JSON.stringify("\uD800"); // '"�"'
+```
+
+특히, 위와 같은 surrogate 코드 포인트(U+D800 ~ U+DFFF)를 포함했었습니다. 이러한 문제를 해결하기 위해 ECMAScript 2019에서는 이러한 짝이 맞지 않는 surrogate 코드 포인트를 포함하는 문자열을 반환하지 않는 대신, JSON 이스케이프 시퀀스로 표현하게 되었습니다.
+
+```javascript
+JSON.stringify("\uD800"); // '"\\ud800"'
+```
+
+> 참고: [Github - proposal-well-formed-stringify](https://github.com/tc39/proposal-well-formed-stringify?tab=readme-ov-file)
+
 ## `String.prototype.{trimStart,trimEnd}`
 
+ECMAScript 2016에서 `String.prototype.trim`만 표준화 했지만, `String.prototype.{trimLeft,trimRight}`는 표준화하지 않은 상태로 주요 엔진들은 해당 메서드를 지원하고 있었습니다.
+
+`padStart`와 `padEnd` 메서드와 일관성을 유지하기 위해 `String.prototype.trimStart`와 `String.prototype.trimEnd`로 메서드를 표준화하게 되었습니다.
+
+하지만 웹 호환성을 위해 `String.prototype.{trimLeft,trimRight}`을 두 메서드의 별칭으로 유지하게 되었습니다.
+
+```javascript
+String.prototype.trimStart === String.prototype.trimLeft; // true
+String.prototype.trimEnd === String.prototype.trimRight; // true
+```
+
+> 참고: [Github - proposal-string-trim-start-end](https://github.com/tc39/proposal-string-left-right-trim?tab=readme-ov-file)
+
 ## `Array.prototype.{flat,flatMap}`
+
+`Array.prototype.flat` 메서드는 중첩된 배열을 평탄화(flatten)하는 메서드입니다. 이 메서드는 기본적으로 1단계의 중첩 배열만 평탄화하며, 깊이를 지정하여 평탄화할 수 있습니다.
+
+```javascript
+[1, 2, [3, 4]].flat(); // [1, 2, 3, 4]
+[1, 2, [3, [4]]].flat(2); // [1, 2, 3, 4]
+```
+
+`Array.prototype.flatMap` 메서드는 `map` 메서드를 수행한 후 `flat` 메서드를 수행하는 메서드입니다. 즉, `map` 메서드와 `flat` 메서드를 한 번에 더 효율적으로 수행할 수 있습니다.
+
+```javascript
+[1, 2, 3].flatMap((x) => [x, x * 2]); // [1, 2, 2, 4, 3, 6]
+[1, 2, 3].map((x) => [x, x * 2]).flat(); // [1, 2, 2, 4, 3, 6]
+```
+
+> 참고: [Github - proposal-flatMap](https://tc39.es/proposal-flatMap/), [MDN - Array.prototype.flat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat), [MDN - Array.prototype.flatMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap)
