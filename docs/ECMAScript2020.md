@@ -58,4 +58,34 @@ CJS(CommonJS)의 `require()`와 달리 별칭(alias) 생성을 문법적으로 �
 
 ## Nullish coalescing Operator
 
+프로퍼티에 접근할 때, 프로퍼티가 `null` 또는 `undefined`일 때 대체값을 지정할 때 기존에는 `||` 연산자를 사용했다. 하지만 이는 falsy한 값에 대해서도 대체값을 지정해버리는 문제가 있었다.:
+
+```javascript
+const obj = {
+  a: 0,
+  b: "",
+  c: null,
+  d: undefined,
+  e: "hello",
+};
+
+obj.a || "default"; // "default"
+obj.b || "default"; // "default"
+obj.c || "default"; // "default"
+obj.d || "default"; // "default"
+obj.e || "default"; // "hello"
+```
+
+이를 해결하기 위해 `??` 연산자가 추가되었다. `??` 연산자는 `null` 또는 `undefined`일 때만 대체값을 지정한다.
+
+```javascript
+obj.a ?? "default"; // 0
+obj.b ?? "default"; // ""
+obj.c ?? "default"; // "default"
+obj.d ?? "default"; // "default"
+obj.e ?? "default"; // "hello"
+```
+
+> [GitHub: tc39/proposal-nullish-coalescing](https://github.com/tc39/proposal-nullish-coalescing)
+
 ## `import.meta`
