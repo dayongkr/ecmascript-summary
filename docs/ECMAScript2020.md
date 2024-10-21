@@ -89,6 +89,28 @@ CJS(CommonJS)의 `require()`와 달리 별칭(alias) 생성을 문법적으로 �
 
 ## `BigInt`
 
+자바스크립트에서는 2^53 - 1보다 큰 정수를 표현할 수 없었다.
+
+그렇다보니 나노초 단위의 타임스탬프를 표현 하거나 64비트의 정수를 다루는데 어려움이 있었고, 이를 해결하기 위해 `BigInt`가 추가되었다.
+
+```javascript
+const max = Number.MAX_SAFE_INTEGER; // 9007199254740991
+max + 1; // 9007199254740991
+
+const bigIntMax = BigInt(Number.MAX_SAFE_INTEGER); // 9007199254740991n
+bigIntMax + 1n; // 9007199254740992n
+```
+
+`BigInt`는 `Number`와 다르게 `n`을 붙여서 표현한다.
+
+조심해야 할점은 `BigNumber`가 아니기 때문에 나눗셈 연산을 할 때 소수점 이하를 버린다.
+
+```JavaScript
+1n / 2n; // 0n
+```
+
+> [GitHub: tc39/proposal-bigint](https://github.com/tc39/proposal-bigint?tab=readme-ov-file)
+
 ## `Promise.allSettled`
 
 ## `globalThis`
