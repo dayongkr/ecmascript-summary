@@ -152,3 +152,47 @@ obj.e ?? "default"; // "hello"
 > [GitHub: tc39/proposal-nullish-coalescing](https://github.com/tc39/proposal-nullish-coalescing)
 
 ## `import.meta`
+
+일반적인 경우엔 사용할 일이 없지만, 라이브러리를 만들 때 사용자가 전달한 값에 따라 동작을 다르게 하여 유연성을 높일 수 있다.
+
+CJS(CommonJS)에서는 현재 파일의 경로 또는 모듈의 경로를 알 수 있는 `__dirname`과 `__filename`이 있었다.
+
+```html
+<script data-option="value" src="script.js"></script>
+```
+
+```javascript
+// script.js
+document.currentScript.dataset.option; // "value"
+```
+
+그리고 위처럼 모듈이 아닌 스크립트에서는 `document.currentScript`를 사용하여 사용자가 전달한 값을 가져올 수 있었다.
+
+하지만 ESM에서는 위와 같은 방법을 사용할 수 없었고, 이를 해결하기 위해 `import.meta`가 추가되었다.
+
+```javascript
+import { fileURLToPath } from "node:url";
+import { dirname } from "node:path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+```
+
+먼저 위처럼 `import.meta.url`을 사용하여 현재 모듈의 URL을 가져올 수 있다. 이를 `url.fileURLToPath()`, `path.dirname()`와 함께 사용하여 현재 파일의 경로와 디렉토리 경로를 가져올 수 있게 됐다.
+
+> Node.js 20.11.0 버전부터 `import.meta.dirname`와 `import.meta.filename`이 추가되어 `import.meta.url`을 사용하지 않아도 된다.
+
+```html
+<script type="module">
+  import "./module.js?query=1";
+</script>
+```
+
+```javascript
+// module.js
+new URL(import.meta.url).searchParams.get("query"); // "1"
+```
+
+위처럼 쿼리 스트링을 사용하여 사용자가 전달한 값을 가져올 수 있다. 이를 통해 사용자가 전달한 값을 통해 동작을 다르게 할 수 있다.
+
+> [GitHub: tc39/proposal-import-meta](https://github.com/tc39/proposal-import-meta), [MDN: import.meta](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import.meta)
