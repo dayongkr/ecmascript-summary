@@ -113,6 +113,26 @@ bigIntMax + 1n; // 9007199254740992n
 
 ## `Promise.allSettled`
 
+기존의 `Promise.all`, `Promise.race`, `Promise.any`는 단락 평가(short-circuit evaluation)를 사용한다. 즉, 하나라도 실패(rejected)하거나 성공(fulfilled)하면 즉시 반환한다.
+
+이러한 특성 때문에 모든 프로미스가 처리될 때까지 기다리는 방법이 없었다. 이를 해결하기 위해 `Promise.allSettled`가 추가되었다.
+
+`Promise.allSettled`는 모든 프로미스가 처리될 때까지 기다린다.
+
+```javascript
+const promises = [fetch("index.html"), fetch("https://does-not-exist/")];
+const results = await Promise.allSettled(promises);
+const successfulPromises = results.filter((p) => p.status === "fulfilled");
+```
+
+`Promise.allSettled`는 다른 메서드와 다르게 `status`, `value`, `reason` 프로퍼티를 가진 객체를 반환한다.
+
+- `status`: 프로미스의 상태를 나타내는 문자열. `"fulfilled"` 또는 `"rejected"`가 될 수 있다.
+- `value`: 프로미스가 성공했을 때의 결과 값. `status`가 `"fulfilled"`일 때만 존재한다.
+- `reason`: 프로미스가 실패했을 때의 이유. `status`가 `"rejected"`일 때만 존재한다.
+
+> [GitHub: tc39/proposal-promise-allSettled](https://github.com/tc39/proposal-promise-allSettled), [MDN: Promise.allSettled()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled)
+
 ## `globalThis`
 
 ## `for-in` mechanics
@@ -193,6 +213,6 @@ const __dirname = dirname(__filename);
 new URL(import.meta.url).searchParams.get("query"); // "1"
 ```
 
-위처럼 쿼리 스트링을 사용하여 사용자가 전달한 값을 가져올 수 있다. 이를 통해 사용자가 전달한 값을 통해 동작을 다르게 할 수 있다.
+그리고 위처럼 쿼리 스트링을 사용하여 사용자가 전달한 값을 가져올 수 있다. 이를 통해 사용자가 전달한 값을 통해 동작을 다르게 할 수 있다.
 
 > [GitHub: tc39/proposal-import-meta](https://github.com/tc39/proposal-import-meta), [MDN: import.meta](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import.meta)
