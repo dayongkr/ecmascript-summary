@@ -135,6 +135,22 @@ const successfulPromises = results.filter((p) => p.status === "fulfilled");
 
 ## `globalThis`
 
+브라우저에서는 `window`, `self`, `this`, `frames`으로 전역 객체에 접근할 수 있었다. 하지만 노드 환경에서는 `global`, `this`으로 접근이 가능한데, 여러 제한 사항이 있다. 그리고 이처럼 환경에 따라 전역 객체에 접근하는 방법이 다르고 그 안에서도 방법이 다양해 혼란이 있었다.
+
+> 이외에도 `Function('return this')()` 등으로 전역 객체에 접근할 수 있었지만, 이는 CSP(Content Security Policy)에 위배되는 문제가 있었다.
+
+이를 해결하기 위해 `globalThis`가 추가되었다. `globalThis`는 어떤 환경에서든 전역 객체에 접근할 수 있는 방법을 제공한다.
+
+```javascript
+globalThis.setTimeout === window.setTimeout; // true
+globalThis.setTimeout === self.setTimeout; // true
+globalThis.setTimeout === this.setTimeout; // true
+```
+
+브라우저에서는 `iframe`, cross-window 보안 문제로 실제 전역 객체를 Proxy로 감싸서 제공하기 때문에, 이런 경우엔 `globalThis`는 실제 전역 객체가 아닌 Proxy 객체를 반환한다.
+
+> [GitHub: tc39/proposal-global](https://github.com/tc39/proposal-global?tab=readme-ov-file), [MDN: globalThis](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis)
+
 ## `for-in` mechanics
 
 ## Optional Chaining
