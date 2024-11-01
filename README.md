@@ -18,8 +18,8 @@ ECMAScript는 1996년 11월에 개발되기 시작해 1997년 6월 ECMA General 
 - [ES8 (ES2017)](./docs/ECMAScript2017.md)
 - [ES9 (ES2018)](./docs/ECMAScript2018.md)
 - [ES10 (ES2019)](./docs/ECMAScript2019.md)
-  > ⚠️ 아래부터는 작성 중으로 일부 내용이 누락될 수 있습니다.
 - [ES11 (ES2020)](./docs/ECMAScript2020.md)
+  > ⚠️ 아래부터는 작성 중으로 일부 내용이 누락될 수 있습니다.
 - [ES12 (ES2021)](./docs/ECMAScript2021.md)
 - [ES13 (ES2022)](./docs/ECMAScript2022.md)
 - [ES14 (ES2023)](./docs/ECMAScript2023.md)

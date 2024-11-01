@@ -7,7 +7,7 @@
 - [`BigInt`](#bigint)
 - [`Promise.allSettled`](#promiseallsettled)
 - [`globalThis`](#globalthis)
-- [`for-in` mechanics](#for-in-mechanics)
+- [`for-in` mechanics or `for-in` order](#for-in-mechanics-or-for-in-order)
 - [Optional Chaining](#optional-chaining)
 - [Nullish coalescing Operator](#nullish-coalescing-operator)
 - [`import.meta`](#importmeta)
@@ -151,9 +151,51 @@ globalThis.setTimeout === this.setTimeout; // true
 
 > [GitHub: tc39/proposal-global](https://github.com/tc39/proposal-global?tab=readme-ov-file), [MDN: globalThis](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis)
 
-## `for-in` mechanics
+## `for-in` mechanics or `for-in` order
+
+`for-in`의 순서는 대게 명세화되어 있지 않았다. `for-in`은 복잡하기 때문인데, 하지만 이미 실제 엔진에서는 특정 조건에서 일관된 동작을 보여주기 때문에 이를 명세화하기로 결정되었다.
+
+해당 제안에서는 총 3가지의 경우가 발생하기 이전까진 동일한 동작을 보여주게 명세화되었다.
+
+1. 프로토타입 체인이 변경된 경우
+2. 속성이 삭제된 경우
+3. 프로토타입 체인에 속성이 추가되거나 열거 가능 속성이 변경된 경우
+
+해당 부분은 `EnumerableOwnPropertyNames`의 동작과 관련이 있으며, 이는 `Object.keys()`, `Object.values()`, `Object.entries()`, `JSON.stringify()`, `JSON.parse()`에 영향을 준다.
+
+> [GitHub: tc39/proposal-for-in-order](https://github.com/tc39/proposal-for-in-order?tab=readme-ov-file)
 
 ## Optional Chaining
+
+객체의 중첩된 프로퍼티에 접근할 때, 중간에 `null` 또는 `undefined`가 있을 때 에러가 발생한다. 따라서 이를 확인하기 위해 아래와 같이 코드를 작성해야 했다.
+
+```javascript
+obj && obj.a && obj.a.b && obj.a.b.c;
+```
+
+이러한 경우를 해결하기 위해 `?.` 연산자가 추가되었다. `?.` 연산자는 좌항이 `null` 또는 `undefined`일 때 에러를 발생시키지 않고 `undefined`를 반환한다.
+
+```javascript
+obj?.a?.b?.c;
+```
+
+`?.` 연산자는 함수 호출 그리고 배열 접근에도 사용할 수 있다.
+
+```javascript
+const obj = {
+  a: () => "hello",
+};
+
+obj.a?.(); // "hello"
+obj.b?.(); // undefined
+
+const arr = [1, 2, 3];
+
+arr?.[0]; // 1
+arr?.[3]; // undefined
+```
+
+> [GitHub: tc39/proposal-optional-chaining](https://github.com/tc39/proposal-optional-chaining), [MDN: Optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining)
 
 ## Nullish coalescing Operator
 
