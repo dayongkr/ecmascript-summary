@@ -27,7 +27,7 @@ Object.entries(author);
 
 객체가 가지고 있는 값을 가져와 사용하는 경우가 많고, 실제로 다양한 라이브러리에서 이미 `values` 메서드를 제공하고 있어요. 이를 언어 차원에서 지원하기 위해 `Object.values`와 `Object.entries` 메서드가 도입되었어요.
 
-> lodash와 같은 유틸리티 라이브러리에서 자주 사용되는 메서드를 언어 차원에서 지원하기 위해 제안하는 경우가 많이 보여요.
+> 이외에도 lodash와 같은 유틸리티 라이브러리에서 자주 사용되는 메서드를 언어 차원에서 지원하기 위해 제안하는 경우가 많이 보여요.
 
 `Object.values`는 주어진 객체의 열거 가능한 속성 값을 배열로 반환하고, `Object.entries`는 주어진 객체의 열거 가능한 속성을 `[key, value]` 형태의 배열로 반환해요.
 
@@ -50,7 +50,7 @@ Object.entries(author);
 
 이 메서드들은 문자열의 길이를 기준으로 채우기 때문에, 이모지와 같은 surrogate pair 문자는 2글자로 처리되어 채워져요.
 
-참고로 자바스크립트는 UTF-16을 사용하기 때문에, 큰 문자를 표현하기 위해 surrogate pair라는 방식으로 2개의 16비트 문자를 사용해요. 이로 인해 이모지 같은 문자는 2글자로 취급돼요.
+참고로 자바스크립트는 UTF-16을 사용하기 때문에, 큰 문자를 표현하기 위해 surrogate pair라는 방식으로 2개의 16비트 문자를 사용해요. 이로 인해 이모지 같은 문자는 2글자로 취급되어 채워지는 것이에요.
 
 > 참고: [MDN - String.prototype.padStart()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart), [MDN - String.prototype.padEnd()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd), [Github Repo - tc39/proposal-string-pad-start-end](https://github.com/tc39/proposal-string-pad-start-end?tab=readme-ov-file)
 
@@ -83,7 +83,7 @@ Object.getOwnPropertyDescriptors(obj);
 */
 ```
 
-복잡한 애플리케이션에서 함수형 프로그래밍과 불변성을 지향하려면, 속성을 적절히 복사하는 것이 중요해요. 하지만 기존의 `Object.assign`은 속성의 descriptor가 아닌 값에 직접적으로 접근하기 때문에 예상치 못한 동작이 발생할 수 있어요. 이러한 문제를 해결하기 위해 `Object.getOwnPropertyDescriptors`가 도입되었어요.
+복잡한 애플리케이션에서 필수적인 부분으로 여겨지고 있는 함수형 프로그래밍과 불변성을 지향하려면, 속성을 적절히 복사하는 것이 중요해요. 하지만 기존의 `Object.assign`은 속성의 descriptor가 아닌 값에 직접적으로 접근하기 때문에 예상치 못한 동작이 발생할 수 있어요. 이러한 문제를 해결하기 위해 `Object.getOwnPropertyDescriptors`가 도입되었어요.
 
 `Object.getOwnPropertyDescriptors`는 객체의 모든 속성에 대한 descriptor를 반환해요. [descriptor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)는 속성의 `value`, `writable`, `enumerable`, `configurable`뿐만 아니라, `get`과 `set` 메서드와 같은 정보를 포함하고 있어요.
 
@@ -143,7 +143,7 @@ foo(
 
 함수 시그니처 정의 또는 함수 호출 시, 마지막 매개변수 뒤에 쉼표를 허용하는 문법이에요.
 
-이전에는 함수 매개변수를 추가하거나 삭제할 때, 마지막 쉼표를 추가하거나 삭제해야 했어요. 하지만 이 문법으로 마지막 쉼표를 허용하면서 코드 수정이 간편해지고, git 기록에서 불필요한 변경 이력을 줄일 수 있게 되었어요. 참고로, 파이썬과 같은 언어들은 이미 이 기능을 지원하고 있었어요.
+이전에는 함수 매개변수를 추가하거나 삭제할 때, 마지막 쉼표를 추가하거나 삭제해야 했어요. 하지만 마지막 쉼표를 허용하면서 코드 수정이 간편해지고, git 기록에서 불필요한 변경 이력을 줄일 수 있게 되었어요. 참고로, 파이썬과 같은 언어들은 이미 이 기능을 지원하고 있었어요.
 
 다만, Prettier와 같은 코드 포맷터에서 `trailingComma` 옵션을 `all`로 설정하지 않으면, Prettier가 자동으로 마지막 쉼표를 제거할 수 있으니 설정을 확인하는 것이 좋아요.
 
@@ -174,7 +174,7 @@ Async Functions는 `Promise`를 기반으로 작동하지만, `await` 키워드�
 
 ## Shared Memory and Atomics
 
-자바스크립트는 기본적으로 단일 스레드로 동작하지만, 웹 워커(Web Workers)를 통해 멀티 스레드 환경으로 확장할 수 있어요. 기존에는 스레드 간 데이터를 공유하기 위해 `postMessage`를 사용했는데, 이 방식은 데이터를 복사하기 때문에 메모리 사용량이 늘어나고 성능이 저하되는 문제가 있었어요.
+자바스크립트는 기본적으로 단일 스레드로 동작하지만, 웹 워커(Web Workers)를 통해 멀티 스레드 환경으로 확장할 수 있어요. 멀티 스레드 환경에서 스레드 간 데이터를 공유하기 위해 `postMessage`를 사용했는데, 이 방식은 데이터를 복사하기 때문에 메모리 사용량이 늘어나고 성능이 저하되는 문제가 있었어요.
 
 이 문제를 해결하기 위해 도입된 것이 `SharedArrayBuffer`예요. `SharedArrayBuffer`는 데이터를 복사하지 않고 메모리를 공유할 수 있어 성능이 크게 개선돼요.
 
