@@ -52,7 +52,7 @@ map.set(key, value);
 console.log(map.get(key)); // value
 ```
 
-`WeakMap`의 키로 객체가 사용되는 이유는 객체가 동일한 정체성(identity) 속성을 가지기 때문이에요. `Symbol`도 고유한 값을 가지기 때문에 `WeakMap`의 키로 사용할 수 있게 되었어요.
+`WeakMap`의 키로 객체가 사용되는 이유는 객체가 고유한 성질을 가지고 있기 때문이에요. `Symbol`도 고유한 값을 가지기 때문에 `WeakMap`의 키로 사용할 수 있게 되었어요.
 
 ```javascript
 const key = Symbol("key");
