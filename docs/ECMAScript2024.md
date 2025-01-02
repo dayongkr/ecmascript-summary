@@ -76,7 +76,7 @@ console.log(regex.test("9")); // false (ASCII 숫자)
 
 ## Resizable and growable ArrayBuffers
 
-기존의 `ArrayBuffer`는 고정 크기로 변경할 수 없어요. 이 때문에 크기를 변경하려면 새로운 `ArrayBuffer`를 생성하고 기존 데이터를 복사해야 했어요. 이러한 문제를 해결하기 위해 `ArrayBuffer`를 크기를 변경할 수 있게 되었어요.
+기존의 `ArrayBuffer`는 크기를 변경할 수 없어요. 이 때문에 크기를 변경하려면 새로운 `ArrayBuffer`를 생성하고 기존 데이터를 복사해야 했어요. 이러한 문제를 해결하기 위해 `ArrayBuffer`의 크기를 변경할 수 있게 되었어요.
 
 ```javascript
 const buffer = new ArrayBuffer(4, { maxByteLength: 8 });

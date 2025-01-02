@@ -29,5 +29,4 @@ ECMAScript는 1996년 11월에 개발이 시작되어 1997년 6월 ECMA General 
 - [ES12 (ES2021)](./docs/ECMAScript2021.md)
 - [ES13 (ES2022)](./docs/ECMAScript2022.md)
 - [ES14 (ES2023)](./docs/ECMAScript2023.md)
-  > ⚠️ 아래부터는 작성 중이라서 일부 내용이 누락될 수 있어요.
 - [ES15 (ES2024)](./docs/ECMAScript2024.md)
